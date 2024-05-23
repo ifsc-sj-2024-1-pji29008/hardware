@@ -2,7 +2,7 @@
 
 from jpmsb import onewire
 
-sensor = onewire('sys/bus/w1/devices')
+sensor = onewire('../sys/bus/w1/devices')
 
 # print(sensor.list_w1_buses())
 # print(sensor.list_sensors(2))
