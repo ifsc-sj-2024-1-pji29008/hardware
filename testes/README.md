@@ -19,5 +19,3 @@ O *script* [`exemplo.py`](python/exemplo.py) faz a leitura de 4 sensores em 4 ba
 ```shell
 ./exemplo.py
 ```
-
-Note que é preciso copiar a biblioteca [`jpmsb.py`](../bibliotecas/jpmsb.py) para o mesmo diretório do *script*.
