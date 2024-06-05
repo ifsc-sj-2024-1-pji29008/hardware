@@ -39,6 +39,7 @@
 # software binary files
 
 *
+!/*.md
 !/*.gitignore
 ##
 !**/*.qpf
