@@ -15,13 +15,7 @@ class onewire:
 
         # Procurando por sensores
         self.search_all_sensors()
-
-    # Procura sensores eliminando aqueles não mais presentes no barramento 
-    def clean_search(self, w1_bus):
-        for i in range(self._search_tries):
-            self.set_search(w1_bus, 1)
-            time.sleep(0.001)
-
+        
     # Procura por barramentos 1-wire
     def search_w1_buses(self, w1_system_path):
         w1_buses = []
@@ -36,7 +30,9 @@ class onewire:
     def search_sensors(self, w1_bus):
         ds18b20_sensors = []
 
-        self.clean_search(w1_bus)
+        for i in range(self._search_tries):
+            self.set_search(w1_bus, 1)
+            time.sleep(0.001)
 
         for sensor in os.listdir(os.path.join(self._w1_system_path, w1_bus)):
             if sensor.startswith('28-'):
@@ -101,3 +97,26 @@ class onewire:
 
         w1_bus_name = self._w1_buses[w1_bus_number-1]
         return self._w1_ds18b20_sensors[w1_bus_name][sensor_id-1]
+
+class sensor:
+    def __init__(self, w1_system_path='/sys/bus/w1/devices'):
+        self._w1 = onewire(w1_system_path)
+
+    def get_temperature(self, w1_bus_number):
+        return self._w1.get_temperature(w1_bus_number, 1)
+
+    def get_address(self, w1_bus_number):
+        return self._w1.get_address(w1_bus_number, 1)
+
+    def list_w1_buses(self):
+        return self._w1.list_w1_buses()
+
+    def list_sensors(self):
+        sensors = []
+        for index, bus in enumerate(self.list_w1_buses()):
+            sensors.append(self._w1.get_address(index + 1, 1))
+
+        return sensors
+
+    def get_sensor_amount():
+        return len(self._w1.list_w1_buses())
