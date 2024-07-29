@@ -1,0 +1,55 @@
+#!/bin/bash
+
+bus_amount="$1"
+sensors_per_bus="$2"
+bus_path="$3"
+
+# Create the bus
+for i in $(seq 1 $bus_amount)
+do
+    mkdir -p $bus_path/sys/bus/w1/devices/w1_bus_master$i
+done
+
+# Create the sensors
+# The sensors are created in the bus path
+for i in $(seq 1 $bus_amount)
+do
+    count=1
+    for j in {a..z}
+    do
+        if [ $count -gt $sensors_per_bus ]
+        then
+            break
+        fi
+
+        mkdir -p $bus_path/sys/bus/w1/devices/w1_bus_master$i/28-000000000$i$j$j
+        count=$((count+1))
+    done
+done
+
+# Inserting fake temperature data to each sensor
+# The temperature keeps varying between 22 and 25 degrees
+# The temperature is stored in the temperature file
+# Hit Ctrl+C to stop the simulation
+while true
+do
+    for i in $(seq 1 $bus_amount)
+    do
+        count=1
+        for j in {a..z}
+        do
+            if [ $count -gt $sensors_per_bus ]
+            then
+                break
+            fi
+
+            temperature=$(shuf -i 22000-25000 -n 1)
+            echo $temperature > $bus_path/sys/bus/w1/devices/w1_bus_master$i/28-000000000$i$j$j/temperature
+
+            count=$((count+1))
+        done
+    done
+    sleep 0.5
+done
+
+
