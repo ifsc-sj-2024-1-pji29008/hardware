@@ -1,27 +1,114 @@
 #!/bin/bash
 
-bus_amount="$1"
-sensors_per_bus="$2"
-bus_path="$3"
+# Argument processing
+while [[ $# -gt 0 ]]; do
+    argument="$1"
+    case $argument in
+        -h|--help)
+            echo "Usage: $0 [options] bus_amount sensors_per_bus bus_path"
+            echo "Options:"
+            echo "  -h, --help              Display this help message"
+            echo "  -b, --bus-amount        The amount of buses to create"
+            echo "  -s, --sensors-per-bus   The amount of sensors to create per bus"
+            echo "                          You can specify the amount of sensors per bus by bus id"
+            echo "                          in the following format: bus_id:sensor_count"
+            echo "  -p, --bus-path          The path to the bus"
+            echo ""
+            echo "Example:"
+            echo "$0 -b 2 -s 3 -p /tmp"
+            echo "This will create 2 buses with 3 sensors each in the /tmp/sys/bus/w1/devices directory"
+            echo ""
+            echo "$0 -b 2 -s 2:3 -p /tmp"
+            echo "This will create 2 buses with 2 and 3 sensors in the /tmp/sys/bus/w1/devices directory"
+            echo ""
+            echo "$0 -b 2 -s 2:3,1:4 -p /tmp"
+            echo "This will create 2 buses, where the bus 1 will have 4 sensors and bus 2 will have 3 sensors"
+            echo ""
+            echo "$0 -b 10 -s *:3,6:0 -p /tmp"
+            echo "This will create 10 buses, where all buses will have 3 sensors except bus 6 which will have 0 sensors"
+            exit 0
+            ;;
+        -b|--bus-amount)
+            bus_amount="$2"
+            if ! [[ "$bus_amount" =~ ^[0-9]+$ ]] || [ $bus_amount -lt 1 ]; then
+                echo "Invalid bus amount."
+                exit 1
+            elif [[ "$2" == --* ]] || [[ -z "$2" ]]; then
+                echo "Missing bus amount."
+                exit 1
+            fi
+            shift
+            shift
+            ;;
+        -s|--sensors-per-bus)
+            sensors_per_bus="$2"
+            if [[ "$2" == --* ]] || [[ -z "$2" ]]; then
+                echo "Missing sensors per bus."
+                exit 1
+            fi
+            shift
+            shift
+            ;;
+        -p|--bus-path)
+            bus_path="$2"
+            if [[ "$2" == --* ]] || [[ -z "$2" ]]; then
+                echo "Missing bus path."
+                exit 1
+            fi
+            shift
+            shift
+            ;;
+        *)
+            echo "Unknown argument: $1"
+            exit 1
+            ;;
+    esac
+done
 
-# Create the bus
-for i in $(seq 1 $bus_amount)
-do
+if [ -z "$bus_amount" ] || [ -z "$sensors_per_bus" ] || [ -z "$bus_path" ]; then
+    echo "Missing arguments"
+    exit 1
+fi
+
+echo "Bus amount: $bus_amount"
+echo "Sensors per bus: $sensors_per_bus"
+echo "Bus path: $bus_path"
+
+# Create the bus directories
+for i in $(seq 1 $bus_amount); do
     mkdir -p $bus_path/sys/bus/w1/devices/w1_bus_master$i
 done
 
+# Parse the sensors_per_bus argument
+declare -A sensors_map
+if [[ "$sensors_per_bus" =~ ^[0-9]+$ ]]; then
+    for i in $(seq 1 $bus_amount); do
+        sensors_map[$i]=$sensors_per_bus
+    done
+else
+    IFS=',' read -r -a sensors_array <<< "$sensors_per_bus"
+    for sensor_spec in "${sensors_array[@]}"; do
+        IFS=':' read -r -a spec <<< "$sensor_spec"
+        bus_id=${spec[0]}
+        sensor_count=${spec[1]}
+        if [[ "$bus_id" == "*" ]]; then
+            for i in $(seq 1 $bus_amount); do
+                sensors_map[$i]=$sensor_count
+            done
+        else
+            sensors_map[$bus_id]=$sensor_count
+        fi
+    done
+fi
+
 # Create the sensors
-# The sensors are created in the bus path
-for i in $(seq 1 $bus_amount)
-do
+for i in $(seq 1 $bus_amount); do
+    sensor_count=${sensors_map[$i]}
     count=1
-    for j in {a..z}
-    do
-        if [ $count -gt $sensors_per_bus ]
-        then
+    for j in {a..z}; do
+        if [ $count -gt $sensor_count ]; then
             break
         fi
-
         mkdir -p $bus_path/sys/bus/w1/devices/w1_bus_master$i/28-000000000$i$j$j
         count=$((count+1))
     done
@@ -31,25 +118,19 @@ done
 # The temperature keeps varying between 22 and 25 degrees
 # The temperature is stored in the temperature file
 # Hit Ctrl+C to stop the simulation
-while true
-do
-    for i in $(seq 1 $bus_amount)
-    do
+while true; do
+    for i in $(seq 1 $bus_amount); do
+        sensor_count=${sensors_map[$i]}
         count=1
-        for j in {a..z}
-        do
-            if [ $count -gt $sensors_per_bus ]
-            then
+        for j in {a..z}; do
+            if [ $count -gt $sensor_count ]; then
                 break
             fi
-
             temperature=$(shuf -i 22000-25000 -n 1)
             echo $temperature > $bus_path/sys/bus/w1/devices/w1_bus_master$i/28-000000000$i$j$j/temperature
-
             count=$((count+1))
         done
     done
     sleep 0.5
 done
-
 
