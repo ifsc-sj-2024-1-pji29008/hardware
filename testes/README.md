@@ -4,7 +4,9 @@ No diretório `sys`, há uma estrutura fantasia de diretórios e arquivos que si
 
 ## Simulador de barramentos 1-wire e sensores DS18B20
 
-No diretório [`shell`](shell) há o _script_ [`w1_simulation`](shell/w1_simulation) que simula a presença de barrentos 1-Wire, bem como sensores nestes barramentos. A rotina cria toda a estrutura de diretórios e arquivos necessária.
+No diretório [`shell`](shell) há o _script_ [`w1_simulation`](shell/w1_simulation) que simula a presença de barrentos 1-Wire, bem como sensores nestes barramentos. Além disso, os valores de temperatura são permutados a cada 500 milissegundos.
+
+A rotina cria toda a estrutura de diretórios e arquivos necessária.
 
 Abaixo estão alguns exemplos de uso:
 
