@@ -15,10 +15,15 @@ Abaixo, estão listadas as características do ambiente de desenvolvimento:
 - Kernel: 6.8.9-1-default
 - Python: 3.11.9
 
+
+
 ## Testes em linguagens de alto nível
 
 Para verficar o funcionamento do barramento One-Wire no Raspberry Pi 3, foi implementado um teste bem simples na linguagem Bash e outro mais bem elaborado na linguagem Python. Veja mais informarções [aqui](testes/README.md).
 
+## Diagrama de Blocos
+
+![Diagrama de Blocos](hardware-pj3.drawio.png)
 
 ## Estrutura do Projeto
 
