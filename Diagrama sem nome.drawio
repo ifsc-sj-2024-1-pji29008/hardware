@@ -1,0 +1,81 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36" version="24.7.7">
+  <diagram name="Página-1" id="6hYLQNSE3f56GaZZcZxO">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="Hardware" style="whiteSpace=wrap;strokeWidth=2;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry width="739" height="316" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="RaspberryPi" style="whiteSpace=wrap;strokeWidth=2;verticalAlign=top;" vertex="1" parent="2">
+          <mxGeometry x="43" y="33" width="263" height="266" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="GPIO" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="3">
+          <mxGeometry x="191" y="43" width="55" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Raspberry Pi" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="3">
+          <mxGeometry x="33" y="125" width="107" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="USB" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="3">
+          <mxGeometry x="194" y="125" width="48" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="HDMI" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="3">
+          <mxGeometry x="190" y="207" width="56" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="" style="curved=1;startArrow=none;endArrow=block;exitX=0.24;exitY=-1.03;entryX=-0.78;entryY=-0.53;" edge="1" parent="3" source="5" target="4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="165" y="59" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9" value="" style="curved=1;startArrow=none;endArrow=block;exitX=0.6;exitY=-0.53;entryX=-0.89;entryY=-0.53;" edge="1" parent="3" source="5" target="6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" value="" style="curved=1;startArrow=none;endArrow=block;exitX=0.24;exitY=-0.03;entryX=-0.76;entryY=-0.53;" edge="1" parent="3" source="5" target="7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="165" y="223" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11" value="Patch Panel" style="whiteSpace=wrap;strokeWidth=2;verticalAlign=top;" vertex="1" parent="2">
+          <mxGeometry x="356" y="33" width="356" height="266" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="Raspberry Pi" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="11">
+          <mxGeometry x="231" y="125" width="107" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="Ethernet" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="11">
+          <mxGeometry x="69" y="43" width="76" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="Power" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="11">
+          <mxGeometry x="77" y="125" width="61" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="Other Connections" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;" vertex="1" parent="11">
+          <mxGeometry x="33" y="207" width="148" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="" style="curved=1;startArrow=none;endArrow=block;exitX=-3.68;exitY=-0.53;entryX=-2.96;entryY=-1.03;" edge="1" parent="11" source="13" target="12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="206" y="59" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="17" value="" style="curved=1;startArrow=none;endArrow=block;exitX=-4.84;exitY=-0.53;entryX=-3.32;entryY=-0.53;" edge="1" parent="11" source="14" target="12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="18" value="" style="curved=1;startArrow=none;endArrow=block;exitX=-1.4;exitY=-0.53;entryX=-2.96;entryY=-0.03;" edge="1" parent="11" source="15" target="12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="206" y="223" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
