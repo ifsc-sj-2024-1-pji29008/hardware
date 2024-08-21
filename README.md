@@ -37,7 +37,7 @@ Para verificar o funcionamento do barramento One-Wire no Raspberry Pi 3, foi imp
 
 ## Diagrama de Blocos
 
-![Diagrama de Blocos](hardware-pj3.drawio.png)
+![Diagrama de Blocos](imagens/hardware-pj3.drawio.png)
 
 ## Estrutura do Projeto
 
