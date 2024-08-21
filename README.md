@@ -2,9 +2,25 @@
 
 Neste repositório estão contidos os códigos fonte relacionados à parte de *hardware* do projeto.
 
-## *Hardware* Atual em Uso
+### Sumário
 
-Inicialmente, foram realizadas tentativas de uso do kit de desenvolvimento DE10-nano. Entretanto, foi verificado que a implementação do barramento One-Wire seria custosa e poderia não ter a estabilidade necessária para os testes com o sensor DS18B20. Outra alternativa foi utilizar o Raspberry Pi 3 Model B, que já possui um barramento One-Wire implementado. Foram realizados testes bem-sucedidos com o sensor em modo parasita. Para tal, foi criado o *script* [`ler_temperatura`](testes/ler_temperatura), na linguagem Bash.
+- [Hardware](#hardware)
+  - [Características do Ambiente de Desenvolvimento](#características-do-ambiente-de-desenvolvimento)
+  - [Testes em Linguagens de Alto Nível](#testes-em-linguagens-de-alto-nível)
+  - [Diagrama de Blocos](#diagrama-de-blocos)
+  - [Estrutura do Projeto](#estrutura-do-projeto)
+    - [Diretório `bibliotecas`](#diretório-bibliotecas)
+      - [Arquivos Importantes](#arquivos-importantes)
+    - [Arquivos de Configuração W1](#arquivos-de-configuração-w1)
+  - [Instruções de Uso](#instruções-de-uso)
+    - [Preparação do cartão de memória](#preparação-do-cartão-de-memória)
+      - [Expansão do Sistema de Arquivos](#expansão-do-sistema-de-arquivos)
+    - [Configuração do Ambiente](#configuração-do-ambiente)
+      - [Instalação do Docker](#instalação-do-docker)
+
+## *Hardware* atual em uso
+
+Inicialmente, foram realizadas tentativas de uso do kit de desenvolvimento DE10-nano. Entretanto, foi verificado que a implementação do barramento One-Wire seria custosa e poderia não ter a estabilidade necessária para os testes com o sensor DS18B20. Outra alternativa foi utilizar o Raspberry Pi 3 Model B, que já possui driver de barramento One-Wire implementado. Foram realizados testes bem-sucedidos com o sensor em modo parasita.
 
 ### Características do Ambiente de Desenvolvimento
 
@@ -12,7 +28,7 @@ Inicialmente, foram realizadas tentativas de uso do kit de desenvolvimento DE10-
 - **CPU**: ARM Cortex-A53 + (4) @ 1.20 GHz (64-bits)
 - **Memória**: 1 GB
 - **Sistema Operacional**: openSUSE Tumbleweed (aarch64)
-- **Kernel**: 6.8.9-1-default
+- **Kernel**: 6.10.5-1-default
 - **Python**: 3.11.9
 
 ## Testes em Linguagens de Alto Nível
@@ -55,25 +71,7 @@ Contém bibliotecas de scripts Python.
 
 #### Arquivos Importantes
 
-- **jpmsb.py**: Script Python com funções e classes reutilizáveis.
-
-### Diretório `testes`
-
-Contém scripts e arquivos de teste para o hardware.
-
-#### Subdiretório `python`
-
-- **exemplo.py**: Script de exemplo para testes em Python.
-- **jpmsb.py**: Funções de teste em Python.
-
-#### Subdiretório `shell`
-
-- **ler_temperatura**: Script de shell para leitura de temperatura de sensores W1.
-- **w1_simulation**: Script de shell para simulação de dispositivos W1.
-
-#### Subdiretório `sys/bus/w1/devices`
-
-Contém arquivos de configuração e leitura para dispositivos W1.
+- **jpmsb.py**: Biblioteca para abstrair a interação com os componentes do barramento 1-Wire.
 
 ### Arquivos de Configuração W1
 
@@ -83,149 +81,76 @@ Contém arquivos de configuração e leitura para dispositivos W1.
 - **w1_master_slaves**: Lista de dispositivos escravos no barramento W1.
 - **temperature**: Leitura de temperatura de dispositivos específicos.
 
-
-
-# One-Wire DS18B20 Sensor Management Library
-
-## Descrição
-
-Esta biblioteca em Python é projetada para gerenciar sensores de temperatura DS18B20 conectados via barramentos 1-wire no sistema de arquivos Linux. A classe principal `onewire` é responsável por detectar e gerenciar barramentos 1-wire e sensores DS18B20, enquanto a classe `sensor` fornece uma interface de alto nível para interagir com os sensores.
-
-## Estrutura da Classe `onewire`
-
-### Construtor
-
-```python
-def __init__(self, w1_system_path='/sys/bus/w1/devices', search_tries=20)
-```
-- **w1_system_path**: Caminho para os dispositivos 1-wire no sistema de arquivos.
-- **search_tries**: Número de tentativas para limpar a busca de sensores.
-
-### Métodos
-
-- **clean_search(w1_bus)**: Realiza uma busca limpa no barramento 1-wire especificado.
-- **search_w1_buses(w1_system_path)**: Procura por barramentos 1-wire disponíveis.
-- **search_sensors(w1_bus)**: Procura por sensores DS18B20 em um barramento 1-wire específico.
-- **search_all_sensors()**: Procura por sensores em todos os barramentos 1-wire.
-- **set_value(w1_bus, property_name, value)**: Define valores nos pseudo-arquivos de um barramento 1-wire.
-- **set_search(w1_bus, value)**: Define a busca de sensores em um barramento 1-wire.
-- **set_pullup(w1_bus, value)**: Define o pull-up de um barramento 1-wire.
-- **list_w1_buses()**: Retorna a lista de barramentos 1-wire.
-- **list_sensors(w1_bus_number)**: Retorna uma lista de sensores DS18B20 em um barramento 1-wire.
-- **get_temperature(w1_bus_number, sensor_id)**: Retorna o valor de temperatura de um sensor DS18B20 pelo ID.
-- **get_address(w1_bus_number, sensor_id)**: Obtém o endereço de um sensor DS18B20.
-
-## Estrutura da Classe `sensor`
-
-### Construtor
-
-```python
-def __init__(self, w1_system_path='/sys/bus/w1/devices')
-```
-- **w1_system_path**: Caminho para os dispositivos 1-wire no sistema de arquivos.
-
-### Métodos
-
-- **new_search()**: Realiza uma nova busca limpa em todos os barramentos 1-wire.
-- **get_temperature(w1_bus_number)**: Retorna a temperatura do sensor DS18B20 no barramento especificado.
-- **get_address(w1_bus_number)**: Obtém o endereço do sensor DS18B20 no barramento especificado.
-- **list_w1_buses()**: Retorna a lista de barramentos 1-wire.
-- **list_sensors()**: Retorna uma lista de sensores DS18B20 detectados.
-- **get_sensor_amount()**: Retorna a quantidade de sensores DS18B20 detectados.
-
-## Exemplo de Uso
-
-```python
-from onewire import sensor
-
-# Instanciando a classe sensor
-s = sensor()
-
-# Listando barramentos 1-wire
-print(s.list_w1_buses())
-
-# Listando sensores conectados
-print(s.list_sensors())
-
-# Obtendo a temperatura do primeiro sensor no primeiro barramento
-print(s.get_temperature(1))
-
-# Obtendo o endereço do primeiro sensor no primeiro barramento
-print(s.get_address(1))
-
-# Realizando uma nova busca de sensores
-s.new_search()
-```
-
-
-
 ## Instruções de Uso
+
+### Preparação do cartão de memória
+
+Primeiramente, baixe a imagem de cartão com o sistema operacional. Neste projeto, foi utilizado o openSUSE Tumbleweed para Raspberry Pi 3, que pode ser baixado [aqui](http://download.opensuse.org/ports/aarch64/tumbleweed/appliances/openSUSE-Tumbleweed-ARM-JeOS-raspberrypi.aarch64.raw.xz).
+
+Após baixar a imagem, descompacte o arquivo e grave-o em um cartão de memória, utilizando o comando abaixo:
+
+```bash
+xzcat openSUSE-Tumbleweed-ARM-JeOS-raspberrypi.aarch64.raw.xz | dd bs=4M of=/dev/sdX iflag=fullblock oflag=direct status=progress; sync
+```
+
+Este processo pode levar vários minutos. Após finalizado, insira o cartão no Raspberry Pi e ligue-o. O sistema operacional será inicializado e você poderá acessá-lo via SSH, sendo o login `root` e a senha `linux`.
+
+#### Expansão do Sistema de Arquivos
+
+Após a primeira inicialização, é recomendável expandir o sistema de arquivos para ocupar todo o cartão de memória. Para isso, instale a ferramenta `growpart` com o comando:
+
+```bash
+zypper install growpart
+```
+
+E expanda a partição raiz (3) com o comando:
+
+```bash
+growpart /dev/mmcblk0 3
+```
+
+Em seguida, redimensione o sistema de arquivos com o comando:
+
+```bash
+resize2fs /dev/mmcblk0p3
+```
 
 ### Configuração do Ambiente
 
-1. **Clone o Repositório**:
-   ```bash
-   git clone <URL-do-repositório>
-   cd hardware-main
+O arquivo `/boot/extraconfig.txt` permite a adição de configurações extras para o Raspberry Pi. No exemplo abaixo, estão configurados 6 barramentos W1:
+
+   ```
+   dtoverlay=w1-gpio,gpiopin=9
+   dtoverlay=w1-gpio,gpiopin=10
+   dtoverlay=w1-gpio,gpiopin=22
+   dtoverlay=w1-gpio,gpiopin=27
+   dtoverlay=w1-gpio,gpiopin=17
+   dtoverlay=w1-gpio,gpiopin=4
    ```
 
-2. **Configure o Ambiente Python**:
-   - Crie um ambiente virtual e instale as dependências.
-   ```bash
-   python -m venv env
-   source env/bin/activate
-   pip install -r requirements.txt
-   ```
+A ordem em que os pinos são especificados determina qual a posição do barramento no sistema. Dessa forma, a contagem começa a partir da última linha de configuração. No exemplo acima, a ordem fica da seguinte forma:
 
-3. **Configuração da Raspberry Pi**:
-   - Certifique-se de que a Raspberry Pi está configurada corretamente para interagir com os dispositivos W1. 
-   - Adicione as seguintes linhas ao final do arquivo `/boot/config.txt`:
-   ```bash
-   dtoverlay=w1-gpio
-   ```
+- w1_bus_master1 &rarr; GPIO 4
+- w1_bus_master2 &rarr; GPIO 17
+- w1_bus_master3 &rarr; GPIO 27
+- w1_bus_master4 &rarr; GPIO 22
+- w1_bus_master5 &rarr; GPIO 10
+- w1_bus_master6 &rarr; GPIO 9
 
-### Testes com Sensores W1
+Isso é utilizado para a localização física do sensor, sendo que este projeto assume apenas um sensor por barramento.
 
-1. **Scripts de Shell**:
-   - Utilize os scripts de shell no diretório `testes/shell` para interagir com os sensores W1.
-   ```bash
-   sh testes/shell/ler_temperatura
-   sh testes/shell/w1_simulation
-   ```
+Após esses ajustes, reinicie o sistema.
 
-2. **Leitura de Temperatura**:
-   - Verifique as leituras de temperatura nos arquivos localizados em `testes/sys/bus/w1/devices`.
+#### Instalação do Docker
 
-## Contribuição
+Para facilitar a organização do serviços, foram utilizados contêineres gerenciados pela ferramenta Docker. Para instalar o Docker, execute os comandos abaixo:
 
-1. **Fork o Projeto**:
-   - Faça um fork do projeto no GitHub e clone o repositório.
+```bash
+zypper install docker docker-compose
+```
 
-2. **Crie uma Branch**:
-   - Crie uma branch para suas modificações.
-   ```bash
-   git checkout -b minha-nova-feature
-   ```
+Em seguida, inicie o serviço e habilite-o para iniciar automaticamente:
 
-3. **Commit suas Alterações**:
-   - Faça commit das suas alterações.
-   ```bash
-   git commit -m "Adicionei uma nova feature"
-   ```
-
-4. **Faça Push**:
-   - Envie suas alterações para o GitHub.
-   ```bash
-   git push origin minha-nova-feature
-   ```
-
-5. **Crie um Pull Request**:
-   - Abra um pull request no repositório original.
-
----
-## Notas
-
-- Esta biblioteca requer permissões adequadas para acessar os arquivos do sistema de barramento 1-wire.
-- Certifique-se de que os módulos do kernel necessários estão carregados para suportar dispositivos 1-wire.
-
----
+```bash
+systemctl enable --now docker
+```
